@@ -24,13 +24,15 @@ namespace TokenBasedAuthWebAPI.Controllers
         private readonly RoleManager<IdentityRole> _rydorolemanager;
         private readonly AppDbContext _rydocontext;
         private readonly IConfiguration _rydoconfiguration;
+        private readonly TokenValidationParameters _rydotokenvalidationparameters;
 
-        public AuthenticationController(UserManager<ApplicationUser> rydousermanager, RoleManager<IdentityRole> rydorolemanager, AppDbContext rydocontext, IConfiguration rydoconfiguration)
+        public AuthenticationController(UserManager<ApplicationUser> rydousermanager, RoleManager<IdentityRole> rydorolemanager, AppDbContext rydocontext, IConfiguration rydoconfiguration, TokenValidationParameters rydotokenvalidationparameters)
         {
             _rydousermanager = rydousermanager;
             _rydorolemanager = rydorolemanager;
             _rydocontext = rydocontext;
             _rydoconfiguration = rydoconfiguration;
+            _rydotokenvalidationparameters = rydotokenvalidationparameters;
         }
 
         [HttpPost("register-user")]

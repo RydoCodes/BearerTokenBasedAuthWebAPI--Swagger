@@ -38,6 +38,25 @@ namespace TokenBasedAuthWebAPI
 			// Configure DBContext with SQL
 			services.AddDbContext<AppDbContext>(options => options.UseSqlServer(ConnectionString));
 
+			var tokenvalidationParameters = new TokenValidationParameters()
+			{
+				ValidateIssuerSigningKey = true,
+				IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Secret"])),
+
+				ValidateIssuer = true,
+				ValidIssuer = Configuration["JWT:Issuer"],
+
+				ValidateAudience = true,
+				ValidAudience = Configuration["JWT:Audience"],
+
+				ValidateLifetime = true,
+				ClockSkew = TimeSpan.Zero // Set the Access Token Expiration Time to be one minute because by default expiration time is 10 mins.
+
+
+			};
+
+			services.AddSingleton(tokenvalidationParameters);
+
 			// Add Identity
 			services.AddIdentity<ApplicationUser, IdentityRole>()
 				.AddEntityFrameworkStores<AppDbContext>()  // Using Entity Framework core to retrieve user and role information from the underlying sql servr databas using EF Core.
@@ -57,18 +76,7 @@ namespace TokenBasedAuthWebAPI
 				.AddJwtBearer(rydooptions=> {
 					rydooptions.SaveToken = true;
 					rydooptions.RequireHttpsMetadata = false;
-					rydooptions.TokenValidationParameters = new TokenValidationParameters()
-					{
-						ValidateIssuerSigningKey = true,
-						IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["JWT:Secret"])),
-
-						ValidateIssuer = true,
-						ValidIssuer= Configuration["JWT:Issuer"],
-
-						ValidateAudience = true,
-						ValidAudience = Configuration["JWT:Audience"]
-
-					};
+					rydooptions.TokenValidationParameters = tokenvalidationParameters;
 				});
 
 			services.AddControllers();
