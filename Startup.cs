@@ -40,8 +40,10 @@ namespace TokenBasedAuthWebAPI
 
 			// Add Identity
 			services.AddIdentity<ApplicationUser, IdentityRole>()
-				.AddEntityFrameworkStores<AppDbContext>()
-				.AddDefaultTokenProviders();
+				.AddEntityFrameworkStores<AppDbContext>()  // Using Entity Framework core to retrieve user and role information from the underlying sql servr databas using EF Core.
+				.AddDefaultTokenProviders(); //     Adds the default token providers used to generate tokens for reset passwords,
+											 //     change email and change telephone number operations, and for two factor authentication
+											 //     token generation.
 
 			// Add Authentication
 
@@ -51,7 +53,7 @@ namespace TokenBasedAuthWebAPI
 				rydooptions.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 				rydooptions.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 			})
-				// Add JWT Bearer
+				// Add JWT Bearer - define the mechanism that is going to be used to validate the token.
 				.AddJwtBearer(rydooptions=> {
 					rydooptions.SaveToken = true;
 					rydooptions.RequireHttpsMetadata = false;
@@ -83,7 +85,7 @@ namespace TokenBasedAuthWebAPI
 			{
 				app.UseDeveloperExceptionPage();
 				app.UseSwagger();
-				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json","Rydo Token API"));
+				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json","Rydo Token API konsa wala"));
 			}
 
 			app.UseHttpsRedirection();

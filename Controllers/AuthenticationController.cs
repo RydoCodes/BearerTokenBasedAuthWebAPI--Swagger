@@ -118,9 +118,24 @@ namespace TokenBasedAuthWebAPI.Controllers
 
             var jwttoken = new JwtSecurityTokenHandler().WriteToken(token);
 
+            // --------Creating the Refresh Token --------
+
+            var refreshtoken = new RefreshToken()
+            {
+                JwtId = token.Id,
+                UserId = user.Id,
+                DateAdded = DateTime.UtcNow,
+                DateExpire = DateTime.UtcNow.AddMonths(6),
+                Token = Guid.NewGuid().ToString() + "-" + Guid.NewGuid().ToString()
+            };
+
+            await _rydocontext.RefreshTokens.AddAsync(refreshtoken);
+            await _rydocontext.SaveChangesAsync();
+
             var response = new AuthResultVM()
             {
                 Token = jwttoken,
+                RefreshToken = refreshtoken.Token,
                 ExpiresAt = token.ValidTo
             };
 
